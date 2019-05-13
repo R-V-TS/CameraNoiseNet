@@ -40,6 +40,8 @@ void imageProccesing::calculateBatchArray(uint8_t *image, int width) {
     tflite::ops::builtin::BuiltinOpResolver resolver;
     tflite::InterpreterBuilder builder(*model, resolver);
 
+    int im_y = 0;
+    int im_x = 0;
     if(builder(&interpreter) == kTfLiteOk) {
         interpreter->AllocateTensors();
 
@@ -53,13 +55,20 @@ void imageProccesing::calculateBatchArray(uint8_t *image, int width) {
         input_2[0] = 100.0f;
 
         /**
-         * TODO: change this image block taken
+         * Taken block 32 * 32 with delay 1 px to remove spatial correlation
+         * 64 is 32*delay(2)
          */
 
         for (int i = 0; i < countBatch; i++) {
-            for (int j = 0; j < batchSize * batchSize; j+=2) {
-                summ += image[j + (i * 32)];
+            for (int j = im_y; j < (batchSize + im_y); j+=2) {
+                for(int k = im_x; k < (batchSize + im_x); k+=2) {
+                    summ += image[(j * width) + k];
+                }
             }
+            im_x += 64;
+
+            if(im_x + 64 > width) im_y = im_y + 64;
+
             mean = summ / (batchSize * batchSize);
             summ = 0;
             for (int j = 0; j < batchSize * batchSize; j+=2) {

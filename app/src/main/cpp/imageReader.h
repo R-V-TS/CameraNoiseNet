@@ -41,7 +41,8 @@ private:
     void imagePreview(jint *image, jint width, jint height);
 
     imageProccesing *imProcessing;
-
+    int width_im;
+    int height_im;
 };
 
 #endif //CAMERAENGINENDK_IMAGEREADER_H

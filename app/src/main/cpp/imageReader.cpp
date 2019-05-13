@@ -32,6 +32,8 @@ imageReader::imageReader(ImageFormat *imageFormat, AIMAGE_FORMATS format) {
     } else{
         LOGW("Error create listener");
     }
+    width_im = imageFormat->width;
+    height_im = imageFormat->height;
 }
 
 void imageReader::registerCallback(void* ctx,
@@ -158,7 +160,6 @@ void imageReader::PresentImage90(AImage *image) {
 
         for (int32_t x = 0; x < width; x++) {
             const int32_t uv_offset = (x >> 1) * uvPixelStride;
-            // [x, y]--> [-y, x]
             image_out[(x*height)+(height-y-1)] = YUV2RGB(pY[x], pU[uv_offset], pV[uv_offset]);
         }
     }
@@ -176,7 +177,7 @@ void imageReader::WriteFile(AImage* image, int32_t format) {
     AImage_getPlaneData(image, 1, &vPixel, &vLen);
     AImage_getPlaneData(image, 2, &uPixel, &uLen);
 
-    imProcessing->calculateBatchArray(yPixel, yStride);
+    imProcessing->calculateBatchArray(yPixel, height_im);
 
     AImage_delete(image);
 }
