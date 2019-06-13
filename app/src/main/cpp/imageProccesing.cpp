@@ -34,7 +34,7 @@ void imageProccesing::calculateBatchArray(uint8_t *image, int width) {
     float noise_sum = 0.0f;
 
     tflite::StderrReporter reporter;
-    const char* model_char = "/sdcard/NoiseNet.tflite";
+    const char* model_char = "/sdcard/develop/NoiseNet/NoiseNet.tflite";
     std::unique_ptr<tflite::FlatBufferModel> model(tflite::FlatBufferModel::BuildFromFile(model_char));
 
     tflite::ops::builtin::BuiltinOpResolver resolver;
